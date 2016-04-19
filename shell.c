@@ -6,21 +6,71 @@
 
 ssize_t readLine(char **bufptr, size_t *n, FILE *fp);
 
+// reads a line into buffer, reallocating memory if necessary
+// buffer will be terminated by '\0'
+// allocated size of buffer array after operation is n
+// returns the number of characters read, not including '\n'
+// returns -1 if stream error or no bytes read
+// caller must free the buffer after use
 ssize_t readLine(char **bufptr, size_t *n, FILE *fp) {
-    ssize_t total;
-    int c;
-    char *buffer = *bufptr;
-    for (total = 0 ; (c = getc(fp)) != EOF && c != '\n' ; total++) {
-        // if the buffer pointed to by buffptr isn't big enough
-        // to fit the next character then resize it
-        if ( total + 1 > *n ) {
-            *n = *n + CHUNK_SIZE;
-            buffer = realloc(buffer, *n);
-        }
-        buffer[total] = (char) c;
+    char *position;
+    size_t available;
+
+    if (!*n) {
+        *n = CHUNK_SIZE;
     }
-    bufptr = &buffer;
-    return total+1;
+
+    if (!*bufptr) {
+        *bufptr = malloc(*n);
+        if (!*bufptr) {
+            return -1;
+        }
+    }
+    position = *bufptr;
+    available = *n;
+    for (;;) {
+        int c = getc(fp);
+        if ((*bufptr + *n) != (position + available)) {
+            return -1;
+        }
+        // resize the buffer if it isn't big enough
+        // to store character and null terminator
+        if (available < 2) {
+            if (*n > CHUNK_SIZE) {
+                *n *= 2;
+            }
+            else {
+                *n += CHUNK_SIZE;
+            }
+            available = *n + (*bufptr - position);
+            *bufptr = realloc(*bufptr, *n);
+            if (!*bufptr) {
+                return -1;
+            }
+            position = *bufptr + (*n - available);
+        }
+
+        if (c == EOF) {
+            if (position == *bufptr) {
+                return -1;
+            }
+            else {
+                break;
+            }
+        }
+
+        // terminator
+        if (c =='\n') {
+            break;
+        }
+
+        *position++ = c;
+        available--;
+
+
+    }
+    *position = '\0';
+    return (position - *bufptr);
 }
 
 int main(int argc, char *argv[]) {
