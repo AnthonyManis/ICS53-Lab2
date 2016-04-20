@@ -2,84 +2,74 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define CHUNK_SIZE 64
 
-ssize_t readLine(char **bufptr, size_t *n, FILE *fp);
 
-// reads a line into buffer, reallocating memory if necessary
-// buffer will be terminated by '\0'
-// allocated size of buffer array after operation is n
-// returns the number of characters read, not including '\n'
-// returns -1 if stream error or no bytes read
-// caller must free the buffer after use
-ssize_t readLine(char **bufptr, size_t *n, FILE *fp) {
-    char *position;
-    size_t available;
+void promptUser();
+int parseCommand(char *line, char *tokens[]);
+void quit_command();
+void general_command(char *argv[]);
 
-    if (!*n) {
-        *n = CHUNK_SIZE;
-    }
+// shows a prompt to the user, gets an input line,
+// calls parseCommand, then determines and calls
+// the appropriate function for the command
+void promptUser() {
 
-    if (!*bufptr) {
-        *bufptr = malloc(*n);
-        if (!*bufptr) {
-            return -1;
-        }
-    }
-    position = *bufptr;
-    available = *n;
     for (;;) {
-        int c = getc(fp);
-        if ((*bufptr + *n) != (position + available)) {
-            return -1;
-        }
-        // resize the buffer if it isn't big enough
-        // to store character and null terminator
-        if (available < 2) {
-            if (*n > CHUNK_SIZE) {
-                *n *= 2;
-            }
-            else {
-                *n += CHUNK_SIZE;
-            }
-            available = *n + (*bufptr - position);
-            *bufptr = realloc(*bufptr, *n);
-            if (!*bufptr) {
-                return -1;
-            }
-            position = *bufptr + (*n - available);
-        }
+        char *line = NULL;
+        size_t line_size = 0;
+        char **argv = NULL;
 
-        if (c == EOF) {
-            if (position == *bufptr) {
-                return -1;
-            }
-            else {
-                break;
+        printf(">");
+        
+        int read;
+        if ( (read = getline(&line, &line_size, stdin)) > 0 ) {
+            if (line[read-1] == '\n') {
+                line[read-1] = '\0';
             }
         }
+        int argc = parseCommand(line, argv);
 
-        // terminator
-        if (c =='\n') {
-            break;
+        if (argc == 0) {
+            // no command, do nothing
         }
+        else if (!strcmp(argv[0], "quit")) {
+            quit_command();
 
-        *position++ = c;
-        available--;
-
-
+        }
+        else {
+            general_command(argv);
+        }
+        free(line);
+        for (int i = 0 ; i < argc ; i++) {
+            free(argv[i]);
+        }
+        free(argv);
     }
-    *position = '\0';
-    return (position - *bufptr);
+}
+
+// parses a line into command & any arguments,
+// storing command in (*tokens)[0] and arguments
+// each in the following elements
+// returns the tokens by reference
+// returns the number of tokens or -1 if error
+int parseCommand(char *line, char *tokens[]) {
+    // tokens in line are separated by spaces, unless
+    // enclosed in quotation marks
+
+    // must allocate **tokens array
+    int ret = -1;
+    return ret;
+}
+
+void quit_command() {
+
+}
+
+void general_command(char *argv[]) {
+
 }
 
 int main(int argc, char *argv[]) {
-    char *buf;
-    size_t len = 0;
-    ssize_t read;
-    read = readLine(&buf, &len, stdin);
-    printf("%d characters read, length of buffer now %d,\n%s\n", read, len, buf);
-    free(buf);
 
     return 0;   
 }
