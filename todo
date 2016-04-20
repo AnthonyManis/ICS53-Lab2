@@ -2,7 +2,8 @@ promptUser:
 -give a prompt
 -read a line of user input
 -call parseCommand with the input line
--call the appropriate command, passing arguments if provided
+-call the function to execute the appropriate command,
+passing arguments if provided
 -redo until the command is 'quit'
 
 parseCommand:
@@ -10,3 +11,14 @@ parseCommand:
 -figure out how many arguments
 -store command and arguments in array
 -return number of arguments or error if no command was found
+
+quit(built in):
+-close the terminal
+-maybe something else? logout? idk
+
+general command:
+-fork process
+-takes executable name and arguments
+-system call to execute specified command,
+passing arguments if any
+
