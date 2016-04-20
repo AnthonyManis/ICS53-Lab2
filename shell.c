@@ -18,7 +18,6 @@ void promptUser() {
         char *line = NULL;
         size_t line_size = 0;
         char **argv = NULL;
-        int argc = 0;
 
         printf("prompt>");
         
@@ -27,8 +26,8 @@ void promptUser() {
             if (line[read-1] == '\n') {
                 line[read-1] = '\0';
             }
-            argc = parseCommand(line, argv);
         }
+        int argc = parseCommand(line, argv);
 
         if (argc == 0) {
             // no command, do nothing
@@ -41,8 +40,7 @@ void promptUser() {
             general_command(argv);
         }
         free(line);
-        int i;
-        for (i = 0 ; i < argc ; i++) {
+        for (int i = 0 ; i < argc ; i++) {
             free(argv[i]);
         }
         free(argv);
@@ -57,10 +55,20 @@ void promptUser() {
 int parseCommand(char *line, char *tokens[]) {
     // tokens in line are separated by spaces, unless
     // enclosed in quotation marks
-
+	char *token;
+	int counter = 0;
+	token = strtok(line, " \t");
+	while (token != NULL)
+	{
+		tokens[counter] = token;
+		++counter;
+		token = strtok(NULL, " \t");
+	}
+	
+	if (counter > 0)
+		return counter;
+	return -1;
     // must allocate **tokens array
-    int ret = -1;
-    return ret;
 }
 
 void quit_command() {
@@ -72,6 +80,7 @@ void general_command(char *argv[]) {
 }
 
 int main(int argc, char *argv[]) {
-    promptUser();
+
+	promptUser();
     return 0;   
 }
