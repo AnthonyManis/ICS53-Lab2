@@ -27,6 +27,8 @@ void promptUser() {
                 line[read-1] = '\0';
             }
         }
+	// allocate size for argv
+	argv = (char *)malloc((strlen(line)+1) * sizeof(char));
         int argc = parseCommand(line, argv);
 
         if (argc == 0) {
