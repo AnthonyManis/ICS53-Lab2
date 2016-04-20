@@ -18,16 +18,17 @@ void promptUser() {
         char *line = NULL;
         size_t line_size = 0;
         char **argv = NULL;
+        int argc = 0;
 
-        printf(">");
+        printf("prompt>");
         
         int read;
         if ( (read = getline(&line, &line_size, stdin)) > 0 ) {
             if (line[read-1] == '\n') {
                 line[read-1] = '\0';
             }
+            argc = parseCommand(line, argv);
         }
-        int argc = parseCommand(line, argv);
 
         if (argc == 0) {
             // no command, do nothing
@@ -40,7 +41,8 @@ void promptUser() {
             general_command(argv);
         }
         free(line);
-        for (int i = 0 ; i < argc ; i++) {
+        int i;
+        for (i = 0 ; i < argc ; i++) {
             free(argv[i]);
         }
         free(argv);
@@ -70,6 +72,6 @@ void general_command(char *argv[]) {
 }
 
 int main(int argc, char *argv[]) {
-
+    promptUser();
     return 0;   
 }
