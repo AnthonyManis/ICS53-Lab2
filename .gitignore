@@ -1,3 +1,9 @@
-*.exe
-*.o
-*.out
+# Ignore Everything
+*
+
+# Except these
+!*.c
+!.gitignore
+!.gitattributes
+!README.md
+!todo
