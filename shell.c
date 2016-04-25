@@ -21,7 +21,7 @@ void promptUser() {
         size_t n = 0;
 
         printf("prompt>");
-        
+
         getline(&line, &line_size, stdin);
         int argc = parseCommand(line, &n, &argv);
         free(line);
@@ -97,16 +97,16 @@ int parseCommand(char *line, size_t *n, char ***tokens) {
     return count;
 }
 
-void quit_command() {
+void quit_command()
 
 }
 
-void general_command(char **argv) {
+void general_command(char **argv, int num_of_elements, bool present) {
 
 }
 
 int main(int argc, char *argv[]) {
 
 	promptUser();
-    return 0;   
+    return 0;
 }
