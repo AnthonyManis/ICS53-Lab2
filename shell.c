@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 
 
 void promptUser();
 int parseCommand(char *line, size_t *n, char ***tokens);
 void quit_command();
-void general_command(char **argv);
+void general_command(char **argv, int num_of_elements, bool present);
 
 // shows a prompt to the user, gets an input line,
 // calls parseCommand, then determines and calls
@@ -32,11 +33,10 @@ void promptUser() {
                 printf("argv %d: %s\n", i, argv[i]);
             }
             if (!strcmp(argv[0], "quit")) {
-                quit_command();
                 break;
             }
             else {
-                general_command(argv);
+                general_command(argv, 0, true);
             }
         }
         if (argc != -1) {
@@ -95,10 +95,6 @@ int parseCommand(char *line, size_t *n, char ***tokens) {
         }
     }
     return count;
-}
-
-void quit_command()
-
 }
 
 void general_command(char **argv, int num_of_elements, bool present) {
