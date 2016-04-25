@@ -1,6 +1,10 @@
+parseCommand
+-spaces at beginning of string not handled correctly
+-quotation mark case in parseCommand
+-find an ampersand if its there (in the correct place) AND STRIP IT
+
 quit(built in):
 -close the terminal
--maybe something else? logout? idk
 
 general command:
 -fork process
