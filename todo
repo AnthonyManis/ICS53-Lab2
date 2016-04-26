@@ -1,6 +1,3 @@
-parseCommand:
--find an ampersand if its there (in the correct place) AND STRIP IT
-
 quit(built in):
 -close the terminal
 
@@ -26,3 +23,4 @@ parseCommand:
 -return number of arguments or error if no command was found
 -spaces at beginning of string not handled correctly
 -quotation mark case in parseCommand
+-find an ampersand if its there (in the correct place) AND STRIP IT
