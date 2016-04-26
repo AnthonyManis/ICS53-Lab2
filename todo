@@ -4,6 +4,7 @@ quit(built in):
 general command:
 -fork process
 -execve the executable file and pass commands
+- make sure to kill all child processes when done!
 
 -----------------------------------------------------------
 Finished Functions
