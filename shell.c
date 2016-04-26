@@ -63,41 +63,57 @@ int parseCommand(char *line, size_t *n, char ***tokens) {
             return -1;
     }
 
-    char *delims = " \t\n";
-    char *tp = NULL;
-    char *next_token = line;
+    char *in_quotes_delims = "\n";
+    char *out_quotes_delims = " \t\n";
+    char *delims = out_quotes_delims;
+    char *token_begin = NULL;
+    char *token_end = line;
     size_t token_size = 0;
     size_t count = 0;
+    bool in_quotes = false;
 
-    while (*next_token) {
+    while (*token_end) {
         if (count >= *n) {
             *n = *n * 2;
             *tokens = realloc(*tokens, *n * sizeof(char*));
             if (!*tokens)
                 return -1;
         }
-        if (!strchr(delims, *next_token)) {
+        // quotes surround a single token that has spaces in it
+        // changes the delims string if inside quotes
+        if (strchr("\"", *token_end)) {
+            if (!in_quotes) {
+                in_quotes = true;
+                delims = in_quotes_delims;
+            }
+            else {
+                in_quotes = false;
+                delims = out_quotes_delims;
+            }
+        }
+        if (!strchr(delims, *token_end)) {
             // ignore leading whitespace
-            if (!tp) {
-                tp = next_token;
+            if (!token_begin) {
+                token_begin = token_end;
             }
             token_size++;
-            next_token++;
+            token_end++;
         }
-        else {
-            if (tp) {
+        else { // new delimiter found, store the current token
+            if (token_begin) {
                 (*tokens)[count] = malloc(token_size+1);
                 if (!(*tokens)[count])
                     return -1;
-                strncpy((*tokens)[count], tp, token_size);
+                strncpy((*tokens)[count], token_begin, token_size);
                 (*tokens)[count][token_size] = '\0';
                 token_size = 0;
                 count++;
             }
-            while(*next_token && strchr(delims, *next_token)){
-                next_token++;
+            // advance to next token
+            while(*token_end && strchr(delims, *token_end)){
+                token_end++;
             }
-            tp = next_token;
+            token_begin = token_end;
         }
     }
     return count;
