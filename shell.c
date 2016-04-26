@@ -64,7 +64,7 @@ int parseCommand(char *line, size_t *n, char ***tokens) {
     }
 
     char *delims = " \t\n";
-    char *tp = line;
+    char *tp = NULL;
     char *next_token = line;
     size_t token_size = 0;
     size_t count = 0;
@@ -77,17 +77,23 @@ int parseCommand(char *line, size_t *n, char ***tokens) {
                 return -1;
         }
         if (!strchr(delims, *next_token)) {
+            // ignore leading whitespace
+            if (!tp) {
+                tp = next_token;
+            }
             token_size++;
             next_token++;
         }
         else {
-            (*tokens)[count] = malloc(token_size+1);
-            if (!(*tokens)[count])
-                return -1;
-            strncpy((*tokens)[count], tp, token_size);
-            (*tokens)[count][token_size] = '\0';
-            token_size = 0;
-            count++;
+            if (tp) {
+                (*tokens)[count] = malloc(token_size+1);
+                if (!(*tokens)[count])
+                    return -1;
+                strncpy((*tokens)[count], tp, token_size);
+                (*tokens)[count][token_size] = '\0';
+                token_size = 0;
+                count++;
+            }
             while(*next_token && strchr(delims, *next_token)){
                 next_token++;
             }

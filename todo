@@ -1,5 +1,4 @@
-parseCommand
--spaces at beginning of string not handled correctly
+parseCommand:
 -quotation mark case in parseCommand
 -find an ampersand if its there (in the correct place) AND STRIP IT
 
@@ -26,3 +25,4 @@ parseCommand:
 -figure out how many arguments
 -store command and arguments in array
 -return number of arguments or error if no command was found
+-spaces at beginning of string not handled correctly
