@@ -6,7 +6,7 @@
 
 
 void promptUser();
-int parseCommand(char *line, size_t *n, char ***tokens);
+int parseCommand(char *line, size_t *n, char ***tokens, bool *background);
 void quit_command();
 void general_command(char **argv, int num_of_elements, bool present);
 
@@ -20,11 +20,12 @@ void promptUser() {
         char **argv = NULL;
         size_t line_size = 0;
         size_t n = 0;
+        bool background;
 
         printf("prompt>");
 
         getline(&line, &line_size, stdin);
-        int argc = parseCommand(line, &n, &argv);
+        int argc = parseCommand(line, &n, &argv, &background);
         free(line);
         printf("%d tokens parsed\n", argc);
         if (argc > 0) {
@@ -36,7 +37,7 @@ void promptUser() {
                 break;
             }
             else {
-                general_command(argv, 0, true);
+                general_command(argv, argc, background);
             }
         }
         if (argc != -1) {
@@ -51,9 +52,10 @@ void promptUser() {
 
 // parses a line into command & any arguments,
 // storing command and arguments as tokens in the (*tokens) array
-// n is the size of the final array
+// the tokens array is grown dynamically along with its size n
+// background is set to true if the string ends in an '&'
 // returns the number of tokens allocated or -1 if allocation error
-int parseCommand(char *line, size_t *n, char ***tokens) {
+int parseCommand(char *line, size_t *n, char ***tokens, bool *background) {
     if (!line)
         return -1;
     if (!*tokens) {
@@ -115,6 +117,20 @@ int parseCommand(char *line, size_t *n, char ***tokens) {
             }
             token_begin = token_end;
         }
+    }
+    // if the last char is '&' set background to true
+    if (count > 0) {
+        size_t last_token = count-1;
+        size_t end = strlen((*tokens)[last_token]) - 1;
+        if ((*tokens)[last_token][end] == '&') {
+            (*tokens)[last_token][end] = '\0';
+            *background = true;
+            if (strlen((*tokens)[last_token]) == 0) {
+                count--;
+                free((*tokens)[last_token]);            }
+        }
+        else
+            *background = false;
     }
     return count;
 }
