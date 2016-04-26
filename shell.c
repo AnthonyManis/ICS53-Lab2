@@ -7,7 +7,6 @@
 
 void promptUser();
 int parseCommand(char *line, size_t *n, char ***tokens, bool *background);
-void quit_command();
 void general_command(char **argv, int num_of_elements, bool present);
 
 // shows a prompt to the user, gets an input line,
@@ -20,7 +19,7 @@ void promptUser() {
         char **argv = NULL;
         size_t line_size = 0;
         size_t n = 0;
-        bool background;
+        bool background = false;
 
         printf("prompt>");
 
