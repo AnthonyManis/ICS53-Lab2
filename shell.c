@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-
+#include <unistd.h>
 
 
 void promptUser();
@@ -135,7 +135,24 @@ int parseCommand(char *line, size_t *n, char ***tokens, bool *background) {
 }
 
 void general_command(char **argv, int num_of_elements, bool present) {
-
+	pid_t child_status = fork();
+	char *newenviron[] = { NULL };
+	if (child_status < 0)
+	{
+		perror("fork() error");
+		exit(-1);
+	}
+	
+	if (child_status != 0)
+	{
+		printf("I'm the parent %d, my child is %d\n", getpid(), child_status);
+		wait(NULL);  // wait for child process to join with this parent
+	}
+	else
+	{
+		printf("I'm the child %d, my parent is %d\n", getpid(), getppid());
+		execve(argv[0], argv, newenviron);
+	}
 }
 
 int main(int argc, char *argv[]) {
