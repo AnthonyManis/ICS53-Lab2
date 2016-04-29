@@ -2,12 +2,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
 
 
 
 void promptUser();
 int parseCommand(char *line, size_t *n, char ***tokens, bool *background);
-void general_command(char **argv, int num_of_elements, bool present);
+void general_command(char **argv, int num_of_elements, bool background);
 
 // shows a prompt to the user, gets an input line,
 // calls parseCommand, then determines and calls
@@ -26,12 +30,12 @@ void promptUser() {
         getline(&line, &line_size, stdin);
         int argc = parseCommand(line, &n, &argv, &background);
         free(line);
-        printf("%d tokens parsed\n", argc);
+        // printf("%d tokens parsed\n", argc);
         if (argc > 0) {
-            int i;
-            for (i = 0 ; i < argc ; i++) {
-                printf("argv %d: %s\n", i, argv[i]);
-            }
+            // int i;
+            // for (i = 0 ; i < argc ; i++) {
+            //     printf("argv %d: %s\n", i, argv[i]);
+            // }
             if (!strcmp(argv[0], "quit")) {
                 break;
             }
@@ -134,7 +138,38 @@ int parseCommand(char *line, size_t *n, char ***tokens, bool *background) {
     return count;
 }
 
-void general_command(char **argv, int num_of_elements, bool present) {
+void general_command(char **argv, int num_of_elements, bool background) {
+
+    int length =strlen(argv[0]);
+
+    char  temp[length + 3];
+    strcpy(temp, "./");
+    strcat(temp, argv[0]);
+
+    strcpy(argv[0], temp);
+
+
+    pid_t child_status = fork();
+    if (child_status < 0){
+
+        perror("fork() error");
+        exit(-1);
+    }
+
+    if (child_status == 0){
+
+         execvp(argv[0], argv);
+    }
+    else {
+
+        int status;
+        if(background)
+            waitpid(child_status, &status, 0);
+        else
+            wait(NULL);
+
+    }
+
 
 }
 
