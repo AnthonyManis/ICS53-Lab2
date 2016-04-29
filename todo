@@ -2,6 +2,7 @@ quit(built in):
 -close the terminal
 
 general command:
+-first check that the executable is actually there
 -fork process
 -execve the executable file and pass commands
 - make sure to kill all child processes when done!
