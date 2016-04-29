@@ -2,12 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-
-
-
 
 void promptUser();
 int parseCommand(char *line, size_t *n, char ***tokens, bool *background);
@@ -169,7 +165,6 @@ void general_command(char **argv, int num_of_elements, bool background) {
             wait(NULL);
 
     }
-
 
 }
 
