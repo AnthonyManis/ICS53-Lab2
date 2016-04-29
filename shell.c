@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 void promptUser();
 int parseCommand(char *line, size_t *n, char ***tokens, bool *background);
@@ -144,15 +145,17 @@ void general_command(char **argv, int num_of_elements, bool background) {
 
     strcpy(argv[0], temp);
 
+    for(int i = 0; i < num_of_elements; i++)
+        printf("%s\n", argv[i] );
 
-    pid_t child_status = fork();
-    if (child_status < 0){
+    pid_t pid = fork();
+    if (pid < 0){
 
         perror("fork() error");
         exit(-1);
     }
 
-    if (child_status == 0){
+    if (pid== 0){
 
          execvp(argv[0], argv);
     }
@@ -160,7 +163,7 @@ void general_command(char **argv, int num_of_elements, bool background) {
 
         int status;
         if(background)
-            waitpid(child_status, &status, 0);
+            waitpid(pid, &status, 0);
         else
             wait(NULL);
 
