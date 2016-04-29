@@ -145,7 +145,8 @@ void general_command(char **argv, int num_of_elements, bool background) {
 
     strcpy(argv[0], temp);
 
-    for(int i = 0; i < num_of_elements; i++)
+    int i;
+    for(i = 0; i < num_of_elements; i++)
         printf("%s\n", argv[i] );
 
     pid_t pid = fork();
@@ -163,7 +164,7 @@ void general_command(char **argv, int num_of_elements, bool background) {
 
         int status;
         if(background)
-            waitpid(pid, &status, 0);
+            waitpid(pid, &status, WNOHANG);
         else
             wait(NULL);
 
