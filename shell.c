@@ -145,12 +145,11 @@ void general_command(char **argv, int num_of_elements, bool present) {
 	
 	if (child_status != 0)
 	{
-		printf("I'm the parent %d, my child is %d\n", getpid(), child_status);
-		wait(NULL);  // wait for child process to join with this parent
+		if (!present)
+			wait(NULL);  // wait for child process to join with this parent
 	}
 	else
 	{
-		printf("I'm the child %d, my parent is %d\n", getpid(), getppid());
 		execve(argv[0], argv, newenviron);
 	}
 }
