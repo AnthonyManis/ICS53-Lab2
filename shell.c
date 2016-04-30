@@ -142,7 +142,7 @@ void general_command(char **argv, int num_of_elements, bool background) {
     int length =strlen(argv[0]);
 
     char  temp[length + 3];
-    strcpy(temp, "");
+    strcpy(temp, "./");
     strcat(temp, argv[0]);
 
     strcpy(argv[0], temp);
