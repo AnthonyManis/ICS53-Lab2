@@ -161,7 +161,9 @@ void general_command(char **argv, int num_of_elements, bool background) {
     if (pid== 0){
         if(background)
             setpgid(0,0);
-         execvp(argv[0], argv);
+         if (execvp(argv[0], argv) == -1) {
+            printf("Command not found: %d %s\n", pid, argv[0]);
+         }
          exit(0);
     }
     else {
@@ -169,6 +171,8 @@ void general_command(char **argv, int num_of_elements, bool background) {
         int status;
         if(!background)
             waitpid(pid, &status, 0);
+        else
+            printf("%d %s\n", pid, argv[0]);
     }
 
 }

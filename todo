@@ -1,6 +1,3 @@
-quit(built in):
--wait for all child processes
-
 general command:
 -first check that the executable is actually there
 -fork process
@@ -26,3 +23,6 @@ parseCommand:
 -spaces at beginning of string not handled correctly
 -quotation mark case in parseCommand
 -find an ampersand if its there (in the correct place) AND STRIP IT
+
+quit(built in):
+-kill all child processes
