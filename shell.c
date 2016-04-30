@@ -1,3 +1,8 @@
+// Manis, Anthony: 71461439
+// Mukesh, Kastala: 40646351
+// Cockins, Ryan: 92859394
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
