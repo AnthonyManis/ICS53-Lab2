@@ -147,9 +147,9 @@ void general_command(char **argv, int num_of_elements, bool background) {
 
     strcpy(argv[0], temp);
 
-    int i;
-    for(i = 0; i < num_of_elements; i++)
-        printf("%s\n", argv[i] );
+    // int i;
+    // for(i = 0; i < num_of_elements; i++)
+    //     printf("%s\n", argv[i] );
 
     pid_t pid = fork();
     if (pid < 0){
@@ -179,8 +179,11 @@ void general_command(char **argv, int num_of_elements, bool background) {
 
 void quit_command() {
     int pid;
-    while (pid = waitpid(-1, NULL, WNOHANG)) {
-        kill(pid, SIGTERM);
+    int status;
+    while (pid = waitpid(-1, &status, WNOHANG) > 0) {
+        if (pid > 0)
+            if (status == 0)
+                kill(pid, SIGTERM);
     }
 }
 
