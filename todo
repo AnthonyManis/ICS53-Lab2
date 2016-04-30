@@ -1,5 +1,5 @@
 quit(built in):
--close the terminal
+-wait for all child processes
 
 general command:
 -first check that the executable is actually there

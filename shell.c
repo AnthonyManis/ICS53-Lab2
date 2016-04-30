@@ -9,6 +9,7 @@
 void promptUser();
 int parseCommand(char *line, size_t *n, char ***tokens, bool *background);
 void general_command(char **argv, int num_of_elements, bool background);
+void quit_command();
 
 // shows a prompt to the user, gets an input line,
 // calls parseCommand, then determines and calls
@@ -34,6 +35,7 @@ void promptUser() {
             //     printf("argv %d: %s\n", i, argv[i]);
             // }
             if (!strcmp(argv[0], "quit")) {
+                quit_command();
                 break;
             }
             else {
@@ -157,18 +159,25 @@ void general_command(char **argv, int num_of_elements, bool background) {
     }
 
     if (pid== 0){
-
+        if(background)
+            setpgid(0,0);
          execvp(argv[0], argv);
+         exit(0);
     }
     else {
 
         int status;
-        if(background)
-            waitpid(pid, &status, WNOHANG);
-        else
-            wait(NULL);
-
+        if(!background)
+            waitpid(pid, &status, 0);
     }
+
+}
+
+void quit_command() {
+    while (!waitpid(-1, NULL, WNOHANG));
+}
+
+void reap(int pid, int status) {
 
 }
 
