@@ -174,7 +174,10 @@ void general_command(char **argv, int num_of_elements, bool background) {
 }
 
 void quit_command() {
-    while (!waitpid(-1, NULL, WNOHANG));
+    int pid;
+    while (pid = waitpid(-1, NULL, WNOHANG)) {
+        kill(pid, SIGTERM);
+    }
 }
 
 void reap(int pid, int status) {
